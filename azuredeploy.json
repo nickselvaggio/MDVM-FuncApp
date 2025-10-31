@@ -86,18 +86,21 @@
         },
         "aadTenantId": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "Azure AD Tenant ID for Microsoft Defender API authentication"
             }
         },
         "aadClientId": {
             "type": "string",
+            "defaultValue": "",
             "metadata": {
                 "description": "Azure AD Application (Client) ID for Microsoft Defender API authentication"
             }
         },
         "aadClientSecret": {
             "type": "securestring",
+            "defaultValue": "",
             "metadata": {
                 "description": "Azure AD Application Client Secret for Microsoft Defender API authentication"
             }
