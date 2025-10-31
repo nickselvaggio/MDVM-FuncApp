@@ -104,15 +104,36 @@
             "metadata": {
                 "description": "Microsoft Defender API Resource URI"
             }
+        },
+        "packageUri": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "The zip content URL for released-package.zip. If specified, this will be used for one-time deployment."
+            }
         }
     },
     "variables": {
         "appInsightsLocation": "[if(or(equals(parameters('location'), 'canadacentral'), equals(parameters('location'), 'Canada Central')), 'canadacentral', parameters('location'))]",
         "useLogAnalytics": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
+        "useOneDeploy": "[not(empty(parameters('packageUri')))]",
         "appPackageContainerName": "[format('app-package-{0}', uniqueString(resourceGroup().id))]",
         "storageBlobDataOwnerRoleDefinitionId": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b"
     },
     "resources": [
+        {
+            "condition": "[variables('useOneDeploy')]",
+            "name": "[format('{0}/onedeploy', parameters('functionAppName'))]",
+            "type": "Microsoft.Web/sites/extensions",
+            "apiVersion": "2022-09-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+            ],
+            "properties": {
+                "packageUri": "[parameters('packageUri')]"
+            }
+        },
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2023-01-01",
