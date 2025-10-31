@@ -59,7 +59,7 @@
         },
         "maximumInstanceCount": {
             "type": "int",
-            "defaultValue": 100,
+            "defaultValue": 40,
             "minValue": 1,
             "maxValue": 1000,
             "metadata": {
@@ -291,10 +291,6 @@
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~4"
-                        },
-                        {
-                            "name": "WEBSITE_RUN_FROM_PACKAGE",
-                            "value": "https://github.com/nickselvaggio/MDVM-FuncApp/releases/latest/download/mdvm-funcapp-v1.0.0.zip"
                         }
                     ],
                     "cors": {

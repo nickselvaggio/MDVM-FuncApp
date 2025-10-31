@@ -19,14 +19,34 @@ All other parameters have sensible defaults:
 - **location**: Defaults to resource group location
 - **storageAccountName**: Auto-generated with unique suffix
 - **pythonVersion**: Defaults to 3.11
-- **maximumInstanceCount**: Defaults to 100
+- **maximumInstanceCount**: Defaults to 40
 - **instanceMemoryMB**: Defaults to 2048 MB
 
-## Post-Deployment Configuration
+## Post-Deployment: Deploy Your Code
 
-The deployment is now fully automated. The managed identity is automatically granted **Storage Blob Data Contributor** access to the storage account during deployment.
+After the infrastructure is created, deploy your function code using one of these methods:
 
-No manual configuration steps are required after deployment completes.
+### Option 1: Azure CLI
+
+```bash
+# Download the latest release zip from GitHub
+# Replace <version> with the desired release tag (e.g., v1.0.0)
+curl -L -o deploy.zip https://github.com/nickselvaggio/MDVM-FuncApp/releases/latest/download/mdvm-funcapp-v1.0.0.zip
+
+# Deploy the zip to Azure Function App
+az functionapp deployment source config-zip \
+  --resource-group <your-resource-group> \
+  --name <your-function-app-name> \
+  --src deploy.zip
+```
+
+### Option 2: VS Code
+
+1. Install the [Azure Functions extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
+2. Clone this repository and open in VS Code
+3. Click the Azure icon in the sidebar
+4. Right-click on your Function App
+5. Select "Deploy to Function App..."
 
 ## Troubleshooting
 
