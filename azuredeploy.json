@@ -295,6 +295,10 @@
                         {
                             "name": "FUNCTIONS_WORKER_RUNTIME",
                             "value": "python"
+                        },
+                        {
+                            "name": "WEBSITE_RUN_FROM_PACKAGE",
+                            "value": "https://github.com/nickselvaggio/MDVM-FuncApp/releases/latest/download/mdvm-funcapp-v1.0.0.zip"
                         }
                     ],
                     "cors": {
