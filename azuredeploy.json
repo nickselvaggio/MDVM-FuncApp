@@ -37,13 +37,6 @@
                 "description": "Name of the App Service Plan (Flex Consumption)"
             }
         },
-        "managedIdentityName": {
-            "type": "string",
-            "defaultValue": "[format('id-{0}', parameters('functionAppName'))]",
-            "metadata": {
-                "description": "Name of the user-assigned managed identity"
-            }
-        },
         "pythonVersion": {
             "type": "string",
             "defaultValue": "3.11",
@@ -116,15 +109,10 @@
     "variables": {
         "appInsightsLocation": "[if(or(equals(parameters('location'), 'canadacentral'), equals(parameters('location'), 'Canada Central')), 'canadacentral', parameters('location'))]",
         "useLogAnalytics": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
-        "appPackageContainerName": "[format('app-package-{0}', uniqueString(resourceGroup().id))]"
+        "appPackageContainerName": "[format('app-package-{0}', uniqueString(resourceGroup().id))]",
+        "storageBlobDataOwnerRoleDefinitionId": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b"
     },
     "resources": [
-        {
-            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-            "apiVersion": "2023-01-31",
-            "name": "[parameters('managedIdentityName')]",
-            "location": "[parameters('location')]"
-        },
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2023-01-01",
@@ -293,15 +281,11 @@
                 "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', parameters('storageAccountName'), 'default', variables('appPackageContainerName'))]",
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
                 "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]"
             ],
             "kind": "functionapp,linux",
             "identity": {
-                "type": "SystemAssigned, UserAssigned",
-                "userAssignedIdentities": {
-                    "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]": {}
-                }
+                "type": "SystemAssigned"
             },
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]",
@@ -352,8 +336,7 @@
                             "type": "blobContainer",
                             "value": "[format('{0}default/{1}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, variables('appPackageContainerName'))]",
                             "authentication": {
-                                "type": "UserAssignedIdentity",
-                                "userAssignedIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+                                "type": "SystemAssignedIdentity"
                             }
                         }
                     },
@@ -397,14 +380,14 @@
             "type": "Microsoft.Authorization/roleAssignments",
             "apiVersion": "2022-04-01",
             "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-            "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedIdentityName'), 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+            "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), variables('storageBlobDataOwnerRoleDefinitionId'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+                "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
             ],
             "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataOwnerRoleDefinitionId'))]",
+                "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')), '2023-01-01', 'Full').identity.principalId]",
                 "principalType": "ServicePrincipal"
             }
         }
@@ -433,14 +416,6 @@
         "applicationInsightsInstrumentationKey": {
             "type": "string",
             "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2020-02-02').InstrumentationKey]"
-        },
-        "managedIdentityPrincipalId": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId]"
-        },
-        "managedIdentityClientId": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').clientId]"
         }
     }
 }
