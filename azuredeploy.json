@@ -307,6 +307,16 @@
                     "minTlsVersion": "1.2"
                 },
                 "functionAppConfig": {
+                    "deployment": {
+                        "storage": {
+                            "type": "blobContainer",
+                            "value": "[format('{0}default/{1}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, variables('appPackageContainerName'))]",
+                            "authentication": {
+                                "type": "UserAssignedIdentity",
+                                "userAssignedIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+                            }
+                        }
+                    },
                     "runtime": {
                         "name": "python",
                         "version": "[parameters('pythonVersion')]"
