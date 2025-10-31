@@ -83,6 +83,31 @@
             "metadata": {
                 "description": "Optional: Resource ID of existing Log Analytics Workspace for Application Insights"
             }
+        },
+        "aadTenantId": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure AD Tenant ID for Microsoft Defender API authentication"
+            }
+        },
+        "aadClientId": {
+            "type": "string",
+            "metadata": {
+                "description": "Azure AD Application (Client) ID for Microsoft Defender API authentication"
+            }
+        },
+        "aadClientSecret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Azure AD Application Client Secret for Microsoft Defender API authentication"
+            }
+        },
+        "aadResourceAppIdUri": {
+            "type": "string",
+            "defaultValue": "https://api.securitycenter.microsoft.com",
+            "metadata": {
+                "description": "Microsoft Defender API Resource URI"
+            }
         }
     },
     "variables": {
@@ -291,6 +316,22 @@
                         {
                             "name": "FUNCTIONS_EXTENSION_VERSION",
                             "value": "~4"
+                        },
+                        {
+                            "name": "AAD_TENANT_ID",
+                            "value": "[parameters('aadTenantId')]"
+                        },
+                        {
+                            "name": "AAD_CLIENT_ID",
+                            "value": "[parameters('aadClientId')]"
+                        },
+                        {
+                            "name": "AAD_CLIENT_SECRET",
+                            "value": "[parameters('aadClientSecret')]"
+                        },
+                        {
+                            "name": "AAD_RESOURCE_APP_ID_URI",
+                            "value": "[parameters('aadResourceAppIdUri')]"
                         }
                     ],
                     "cors": {
