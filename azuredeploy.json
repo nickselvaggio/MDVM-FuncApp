@@ -129,7 +129,7 @@
             "location": "[parameters('location')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]",
-                "[resourceId('Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), variables('storageBlobDataOwnerRoleDefinitionId')))]"
+                "[resourceId(format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), variables('storageBlobDataOwnerRoleDefinitionId')))]"
             ],
             "properties": {
                 "packageUri": "[parameters('packageUri')]"
