@@ -293,10 +293,6 @@
                             "value": "~4"
                         },
                         {
-                            "name": "FUNCTIONS_WORKER_RUNTIME",
-                            "value": "python"
-                        },
-                        {
                             "name": "WEBSITE_RUN_FROM_PACKAGE",
                             "value": "https://github.com/nickselvaggio/MDVM-FuncApp/releases/latest/download/mdvm-funcapp-v1.0.0.zip"
                         }
@@ -311,16 +307,6 @@
                     "minTlsVersion": "1.2"
                 },
                 "functionAppConfig": {
-                    "deployment": {
-                        "storage": {
-                            "type": "blobContainer",
-                            "value": "[format('{0}default/{1}', reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').primaryEndpoints.blob, variables('appPackageContainerName'))]",
-                            "authentication": {
-                                "type": "UserAssignedIdentity",
-                                "userAssignedIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
-                            }
-                        }
-                    },
                     "runtime": {
                         "name": "python",
                         "version": "[parameters('pythonVersion')]"
